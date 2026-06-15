@@ -29,3 +29,13 @@ test("applyDiscount rounds to cents", () => {
 test("applyDiscount rejects out-of-range percentages", () => {
   assert.throws(() => applyDiscount(100, 150), /range/);
 });
+
+import { mergeCarts } from "../src/cart.js";
+
+test("mergeCarts sums duplicate sku quantities", () => {
+  const a = [{ sku: "ROCKET-1", price: 99.5, qty: 1 }];
+  const b = [{ sku: "ROCKET-1", price: 99.5, qty: 2 }];
+  const merged = mergeCarts(a, b);
+  assert.equal(merged.length, 1);
+  assert.equal(merged[0].qty, 3);
+});
