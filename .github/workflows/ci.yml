@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Test
+        run: node --test --test-reporter junit --test-reporter-destination=results.xml test/cart.test.js
+        continue-on-error: true
+
+      - uses: clearship/clearship/actions/upload-action@task/upload-action
+        with:
+          api-key: ${{ secrets.CLEARSHIP_CI_API_KEY }}
+          project: rocket-cart
+          suite: unit
+          results-path: results.xml
+          gate-min-score: '85'
